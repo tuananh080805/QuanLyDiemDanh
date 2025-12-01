@@ -25,4 +25,6 @@ router.post('/attendance', attendanceController.markAttendance);
 router.get('/tuition-preview', reportController.getTuitionPreview);
 router.get('/export-tuition', reportController.exportTuition);
 
+router.delete('/students/:id', studentController.deleteStudent); // Xóa 1 em
+router.delete('/students/class/:classId', studentController.deleteByClass);
 module.exports = router;

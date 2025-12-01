@@ -75,3 +75,18 @@ exports.getAllClasses = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.deleteByClass = async (req, res) => {
+    try {
+        const { classId } = req.params;
+        
+        // Xóa tất cả học sinh thuộc ClassId này
+        // Lưu ý: Do đã cài onCascade: true ở model, nên điểm danh cũng sẽ tự mất theo
+        const count = await Student.destroy({ 
+            where: { ClassId: classId } 
+        });
+
+        res.json({ message: `Đã xóa ${count} học sinh của lớp này` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
