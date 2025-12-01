@@ -21,8 +21,8 @@ function AttendancePage() {
   const fetchData = async () => {
     try {
       const [resSt, resCl] = await Promise.all([
-        axios.get(`https://quanlydiemdanh.onrender.com//students?date=${date}`),
-        axios.get('https://quanlydiemdanh.onrender.com//classes')
+        axios.get(`https://quanlydiemdanh.onrender.com/students?date=${date}`),
+        axios.get('https://quanlydiemdanh.onrender.com/classes')
       ]);
 
       setStudents(resSt.data);
@@ -62,7 +62,7 @@ function AttendancePage() {
   const handleCheck = async (studentId, isChecked) => {
     setCheckedState(prev => ({ ...prev, [studentId]: isChecked }));
     try {
-      await axios.post('https://quanlydiemdanh.onrender.com//attendance', {
+      await axios.post('https://quanlydiemdanh.onrender.com/attendance', {
         studentId, date, isPresent: isChecked
       });
     } catch (err) { console.error(err); }
@@ -75,7 +75,7 @@ function AttendancePage() {
     setCheckedState(newState);
 
     for (const st of filteredStudents) {
-      await axios.post('https://quanlydiemdanh.onrender.com//attendance', {
+      await axios.post('https://quanlydiemdanh.onrender.com/attendance', {
         studentId: st.id, date, isPresent: newValue
       });
     }
@@ -83,7 +83,7 @@ function AttendancePage() {
 
   const handleExport = () => {
     if(!selectedClassId) return alert("Vui lòng chọn lớp cần xuất Excel!");
-    const url = `https://quanlydiemdanh.onrender.com//export-tuition?startDate=${date}&endDate=${date}&classId=${selectedClassId}`;
+    const url = `https://quanlydiemdanh.onrender.com/export-tuition?startDate=${date}&endDate=${date}&classId=${selectedClassId}`;
     window.open(url, '_blank');
   };
 

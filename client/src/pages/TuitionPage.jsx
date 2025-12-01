@@ -14,7 +14,7 @@ function TuitionPage() {
 
   // Load danh sách lớp khi vào trang
   useEffect(() => {
-    axios.get('https://quanlydiemdanh.onrender.com//classes').then(res => setClasses(res.data));
+    axios.get('https://quanlydiemdanh.onrender.com/classes').then(res => setClasses(res.data));
   }, []);
 
   const handlePreview = async () => {
@@ -22,7 +22,7 @@ function TuitionPage() {
     setLoading(true);
     try {
       // Gửi kèm classId lên server
-      const res = await axios.get(`https://quanlydiemdanh.onrender.com//tuition-preview`, {
+      const res = await axios.get(`https://quanlydiemdanh.onrender.com/tuition-preview`, {
         params: { startDate, endDate, classId: selectedClassId }
       });
       setData(res.data);
@@ -32,7 +32,7 @@ function TuitionPage() {
 
   const handleExport = () => {
     // Mở tab mới để tải file, kèm tham số classId
-    const url = `https://quanlydiemdanh.onrender.com//export-tuition?startDate=${startDate}&endDate=${endDate}&classId=${selectedClassId}`;
+    const url = `https://quanlydiemdanh.onrender.com/export-tuition?startDate=${startDate}&endDate=${endDate}&classId=${selectedClassId}`;
     window.open(url, '_blank');
   };
 
