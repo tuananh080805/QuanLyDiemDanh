@@ -90,3 +90,28 @@ exports.deleteByClass = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.importStudents = async (req, res) => {
+    try {
+        const { names, classId, commune } = req.body;
+        // names là mảng các tên: ["Nguyễn Văn A", "Trần Thị B", ...]
+
+        if (!names || !Array.isArray(names) || names.length === 0) {
+            return res.status(400).json({ error: "Danh sách tên trống!" });
+        }
+
+        // Tạo mảng dữ liệu để lưu vào DB
+        const dataToInsert = names.map(name => ({
+            name: name.trim(),
+            ClassId: classId,
+            commune: commune || '' // Nếu có nhập xã thì lưu chung cho cả đám này
+        }));
+
+        // Lệnh bulkCreate giúp lưu hàng loạt cực nhanh
+        await Student.bulkCreate(dataToInsert);
+
+        res.json({ message: `Đã nhập thành công ${dataToInsert.length} học sinh!` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
