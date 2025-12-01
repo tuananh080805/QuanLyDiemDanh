@@ -1,0 +1,13 @@
+/* client/src/components/Navbar.css */
+nav {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+    transition: opacity 0.2s;
+}
+
+nav a:hover {
+    opacity: 0.8;
+    text-decoration: underline !important;
+}

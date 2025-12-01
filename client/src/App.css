@@ -1,0 +1,196 @@
+/* src/App.css */
+:root {
+  --primary: #4f46e5;
+  /* Màu chủ đạo (Indigo) */
+  --bg-body: #f1f5f9;
+  /* Màu nền xám nhẹ */
+  --bg-card: #ffffff;
+  /* Màu nền thẻ trắng */
+  --text-main: #1e293b;
+  --border-color: #e2e8f0;
+}
+
+body {
+  background-color: var(--bg-body);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  color: var(--text-main);
+  overflow-y: scroll;
+  /* Luôn hiện thanh cuộn để tránh giật hình */
+}
+
+/* --- LAYOUT CHUNG CHO LAPTOP --- */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  max-width: 1400px;
+  /* Mở rộng tối đa cho màn hình laptop */
+  margin: 0 auto;
+  padding: 20px 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+h2 {
+  color: var(--primary);
+  margin-top: 0;
+}
+
+/* --- NAVBAR (Thanh menu trên cùng) --- */
+.navbar {
+  background: white;
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #64748b;
+  font-weight: 600;
+  margin-right: 30px;
+  padding: 18px 0;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.navbar a:hover,
+.navbar a.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* --- GRID SYSTEM (Chia cột cho Laptop) --- */
+.desktop-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  /* Cột trái 350px, Cột phải chiếm hết phần còn lại */
+  gap: 25px;
+  align-items: start;
+  /* Căn lên trên cùng */
+}
+
+/* Panel bên trái (Form nhập liệu) */
+.left-panel {
+  background: var(--bg-card);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  /* Dính form khi cuộn chuột */
+  top: 90px;
+}
+
+/* Panel bên phải (Bảng dữ liệu) */
+.right-panel {
+  background: var(--bg-card);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  min-height: 500px;
+}
+
+/* --- FORM STYLES --- */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  /* Quan trọng để không bị vỡ layout */
+  outline: none;
+  transition: border 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--primary);
+}
+
+button.btn-primary {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button.btn-primary:hover {
+  background: #4338ca;
+}
+
+/* --- TABLE STYLES (Đẹp như Excel) --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  text-align: left;
+  padding: 15px 10px;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+tr:hover {
+  background-color: #f8fafc;
+}
+
+/* --- THANH CÔNG CỤ (Toolbar) --- */
+.toolbar {
+  display: flex;
+  gap: 15px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-item label {
+  white-space: nowrap;
+  font-weight: 500;
+}
