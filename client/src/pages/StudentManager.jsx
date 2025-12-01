@@ -8,10 +8,9 @@ function StudentManager() {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   
-  // State Form Thêm Lẻ
+  // State Form Thêm Lẻ (ĐÃ BỎ NOTE)
   const [name, setName] = useState('');
   const [commune, setCommune] = useState(''); 
-  const [note, setNote] = useState(''); // Ghi chú
   
   const [isNewClass, setIsNewClass] = useState(false);
   const [classId, setClassId] = useState('');
@@ -40,11 +39,12 @@ function StudentManager() {
     } catch(err) { console.error(err); }
   };
 
-  // --- THÊM LẺ ---
+  // --- THÊM LẺ (ĐÃ BỎ GỬI NOTE) ---
   const handleAddOne = async () => {
     if(!name) return alert("Chưa nhập tên!");
     
-    const payload = { name, commune, note };
+    const payload = { name, commune }; // Chỉ gửi Tên và Xã
+    
     if (isNewClass) {
         payload.newClassName = newClassName;
         payload.newClassFee = newClassFee;
@@ -53,12 +53,12 @@ function StudentManager() {
     try {
         await axios.post(`${API_URL}/students`, payload);
         alert("Thêm thành công!");
-        setName(''); setCommune(''); setNote('');
+        setName(''); setCommune(''); 
         setIsNewClass(false); fetchData();
     } catch (err) { alert(err.message); }
   };
 
-  // --- NHẬP NHIỀU ---
+  // --- NHẬP NHIỀU (ĐÃ BỎ GỬI NOTE) ---
   const handleBulkImport = async () => {
     if (!bulkText.trim()) return alert("Vui lòng dán danh sách tên!");
     const namesArray = bulkText.split('\n').filter(line => line.trim() !== '');
@@ -67,11 +67,11 @@ function StudentManager() {
         await axios.post(`${API_URL}/students/import`, {
             names: namesArray,
             classId: classId,
-            commune: commune,
-            note: note
+            commune: commune
+            // Không gửi note nữa
         });
         alert(`Đã nhập xong ${namesArray.length} học sinh!`);
-        setBulkText(''); setNote('');
+        setBulkText(''); 
         setIsBulkMode(false); fetchData();
     } catch (err) { alert("Lỗi: " + err.message); }
   };
@@ -84,7 +84,7 @@ function StudentManager() {
     const confirmMsg = prompt(`⚠️ CẢNH BÁO: XÓA LỚP ${className}?\nGõ chữ "XOA" để xác nhận:`);
     if (confirmMsg === "XOA") {
         try {
-            await axios.delete(`${API_URL}/classes/${filterClassId}`); // API xóa lớp cần backend hỗ trợ như đã làm
+            await axios.delete(`${API_URL}/classes/${filterClassId}`);
             alert(`Đã xóa lớp ${className}!`);
             fetchData();
         } catch (err) { alert("Lỗi: " + err.message); }
@@ -148,10 +148,7 @@ function StudentManager() {
               <input value={commune} onChange={e => setCommune(e.target.value)} placeholder="VD: Tân Hội..." />
             </div>
 
-            <div className="form-group">
-              <label>Ghi chú:</label>
-              <input value={note} onChange={e => setNote(e.target.value)} placeholder="VD: Đã nghỉ..." style={{background: '#fffbeb', borderColor: '#f59e0b'}} />
-            </div>
+            {/* ĐÃ BỎ Ô NHẬP GHI CHÚ */}
 
             <button onClick={isBulkMode ? handleBulkImport : handleAddOne} className="btn-primary">
                 {isBulkMode ? `Lưu Danh Sách` : 'Lưu Học Sinh'}
@@ -176,22 +173,19 @@ function StudentManager() {
           <table>
             <thead>
               <tr>
-                {/* ĐÃ BỎ CỘT ID Ở ĐÂY */}
+                {/* ĐÃ BỎ CỘT ID VÀ CỘT GHI CHÚ */}
                 <th>Lớp</th>
                 <th>Tên</th>
                 <th>Xã</th>
-                <th>Ghi Chú</th>
                 <th style={{textAlign:'right'}}>Xóa</th>
               </tr>
             </thead>
             <tbody>
               {visibleStudents.map(st => (
                 <tr key={st.id}>
-                  {/* ĐÃ BỎ CỘT ID Ở ĐÂY */}
                   <td><span style={{background:'#dbeafe', color:'#1e40af', padding:'2px 8px', borderRadius:'10px', fontSize:'0.8rem', fontWeight:'bold'}}>{st.Class?.name}</span></td>
                   <td style={{fontWeight:'500'}}>{st.name}</td>
                   <td style={{color:'#64748b'}}>{st.commune || '-'}</td>
-                  <td style={{color:'#d97706', fontStyle:'italic'}}>{st.note || '-'}</td>
                   <td style={{textAlign:'right'}}>
                     <button onClick={() => handleDelete(st.id)} style={{background:'white', border:'1px solid red', color:'red', borderRadius:'4px', cursor:'pointer'}}>🗑️</button>
                   </td>
