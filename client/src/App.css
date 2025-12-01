@@ -1,11 +1,16 @@
-/* src/App.css */
+/* --- RESET MẶC ĐỊNH CỦA VITE (QUAN TRỌNG) --- */
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: left;
+}
+
 :root {
   --primary: #4f46e5;
-  /* Màu chủ đạo (Indigo) */
   --bg-body: #f1f5f9;
-  /* Màu nền xám nhẹ */
   --bg-card: #ffffff;
-  /* Màu nền thẻ trắng */
   --text-main: #1e293b;
   --border-color: #e2e8f0;
 }
@@ -16,10 +21,9 @@ body {
   margin: 0;
   color: var(--text-main);
   overflow-y: scroll;
-  /* Luôn hiện thanh cuộn để tránh giật hình */
 }
 
-/* --- LAYOUT CHUNG CHO LAPTOP --- */
+/* --- LAYOUT CHUNG --- */
 .app-layout {
   min-height: 100vh;
   display: flex;
@@ -28,7 +32,6 @@ body {
 
 .page-container {
   max-width: 1400px;
-  /* Mở rộng tối đa cho màn hình laptop */
   margin: 0 auto;
   padding: 20px 40px;
   width: 100%;
@@ -40,7 +43,7 @@ h2 {
   margin-top: 0;
 }
 
-/* --- NAVBAR (Thanh menu trên cùng) --- */
+/* --- NAVBAR --- */
 .navbar {
   background: white;
   padding: 0 40px;
@@ -69,28 +72,23 @@ h2 {
   border-bottom-color: var(--primary);
 }
 
-/* --- GRID SYSTEM (Chia cột cho Laptop) --- */
+/* --- GRID SYSTEM (LAPTOP) --- */
 .desktop-grid {
   display: grid;
   grid-template-columns: 350px 1fr;
-  /* Cột trái 350px, Cột phải chiếm hết phần còn lại */
   gap: 25px;
   align-items: start;
-  /* Căn lên trên cùng */
 }
 
-/* Panel bên trái (Form nhập liệu) */
 .left-panel {
   background: var(--bg-card);
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   position: sticky;
-  /* Dính form khi cuộn chuột */
   top: 90px;
 }
 
-/* Panel bên phải (Bảng dữ liệu) */
 .right-panel {
   background: var(--bg-card);
   padding: 25px;
@@ -99,7 +97,7 @@ h2 {
   min-height: 500px;
 }
 
-/* --- FORM STYLES --- */
+/* --- FORM & INPUT --- */
 .form-group {
   margin-bottom: 15px;
 }
@@ -119,7 +117,6 @@ select {
   border-radius: 6px;
   font-size: 14px;
   box-sizing: border-box;
-  /* Quan trọng để không bị vỡ layout */
   outline: none;
   transition: border 0.2s;
 }
@@ -145,7 +142,7 @@ button.btn-primary:hover {
   background: #4338ca;
 }
 
-/* --- TABLE STYLES (Đẹp như Excel) --- */
+/* --- TABLE --- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -172,7 +169,7 @@ tr:hover {
   background-color: #f8fafc;
 }
 
-/* --- THANH CÔNG CỤ (Toolbar) --- */
+/* --- TOOLBAR --- */
 .toolbar {
   display: flex;
   gap: 15px;
@@ -182,6 +179,7 @@ tr:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .toolbar-item {
@@ -193,4 +191,80 @@ tr:hover {
 .toolbar-item label {
   white-space: nowrap;
   font-weight: 500;
+}
+
+
+/* =========================================
+   GIAO DIỆN MOBILE (RESPONSIVE)
+   ========================================= */
+@media (max-width: 768px) {
+
+  .page-container {
+    padding: 15px 10px;
+  }
+
+  /* Menu dọc */
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .navbar a {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    margin: 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  /* Grid thành 1 cột */
+  .desktop-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .left-panel {
+    position: relative;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  /* Bảng có thanh cuộn ngang */
+  .right-panel,
+  .card {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  /* Toolbar dọc */
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .toolbar-item input,
+  .toolbar-item select {
+    width: 100% !important;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 15px;
+  }
 }
