@@ -145,7 +145,7 @@ function StudentManager() {
 
             <div className="form-group">
               <label>Xã / Địa chỉ:</label>
-              <input value={commune} onChange={e => setCommune(e.target.value)} placeholder="VD: Tân Hội..." />
+              <input value={commune} onChange={e => setCommune(e.target.value)} placeholder="VD: Thăng Long..." />
             </div>
 
             {/* ĐÃ BỎ Ô NHẬP GHI CHÚ */}
