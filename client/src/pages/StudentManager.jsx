@@ -7,10 +7,9 @@ function StudentManager() {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   
-  // State Form Thêm Lẻ
+  // State Form Thêm
   const [name, setName] = useState('');
   const [commune, setCommune] = useState(''); 
-  
   const [isNewClass, setIsNewClass] = useState(false);
   const [classId, setClassId] = useState('');
   const [newClassName, setNewClassName] = useState('');
@@ -20,12 +19,13 @@ function StudentManager() {
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState('');
 
-  // State Bộ lọc
+  // --- BỘ LỌC (Sẽ để ở bên phải) ---
   const [filterClassId, setFilterClassId] = useState('all');
   const [filterCommune, setFilterCommune] = useState('');
+  const [filterName, setFilterName] = useState(''); // MỚI: Lọc theo tên
 
-  // --- STATE CHO CHẾ ĐỘ SỬA (MỚI) ---
-  const [editingId, setEditingId] = useState(null); // ID học sinh đang sửa
+  // State Sửa
+  const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', commune: '', classId: '' });
 
   useEffect(() => { fetchData(); }, []);
@@ -42,10 +42,9 @@ function StudentManager() {
     } catch(err) { console.error(err); }
   };
 
-  // --- LOGIC THÊM (Giữ nguyên) ---
   const handleAddOne = async () => {
     if(!name) return alert("Chưa nhập tên!");
-    const payload = { name, commune }; 
+    const payload = { name, commune };
     if (isNewClass) {
         payload.newClassName = newClassName;
         payload.newClassFee = newClassFee;
@@ -80,49 +79,49 @@ function StudentManager() {
         try {
             await axios.delete(`${API_URL}/classes/${filterClassId}`);
             alert(`Đã xóa lớp ${className}!`);
+            setFilterClassId('all'); // Reset bộ lọc về tất cả
             fetchData();
         } catch (err) { alert("Lỗi: " + err.message); }
     }
   };
 
-  // --- LOGIC SỬA (MỚI) ---
+  // --- LOGIC SỬA ---
   const startEdit = (st) => {
     setEditingId(st.id);
-    // Điền thông tin cũ vào form sửa
-    setEditForm({
-        name: st.name,
-        commune: st.commune || '',
-        classId: st.ClassId // Lấy ID lớp hiện tại
-    });
+    setEditForm({ name: st.name, commune: st.commune || '', classId: st.ClassId });
   };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({ name: '', commune: '', classId: '' });
-  };
-
+  const cancelEdit = () => { setEditingId(null); setEditForm({ name: '', commune: '', classId: '' }); };
   const saveEdit = async () => {
     try {
         await axios.put(`${API_URL}/students/${editingId}`, editForm);
         alert("Cập nhật thành công!");
         setEditingId(null);
         fetchData();
-    } catch (err) {
-        alert("Lỗi cập nhật: " + err.message);
-    }
+    } catch (err) { alert("Lỗi cập nhật: " + err.message); }
   };
 
-  const visibleStudents = students.filter(st => {
-    return (filterClassId === 'all' || st.ClassId == filterClassId) &&
-           (st.commune || '').toLowerCase().includes(filterCommune.toLowerCase());
-  });
+  // --- LOGIC LỌC & SẮP XẾP TÊN ---
+  const visibleStudents = students
+    .filter(st => {
+        const matchClass = filterClassId === 'all' || st.ClassId == filterClassId;
+        const matchCommune = (st.commune || '').toLowerCase().includes(filterCommune.toLowerCase());
+        const matchName = st.name.toLowerCase().includes(filterName.toLowerCase()); // Lọc tên
+        return matchClass && matchCommune && matchName;
+    })
+    .sort((a, b) => {
+        const nameA = a.name.trim().split(' ').pop();
+        const nameB = b.name.trim().split(' ').pop();
+        const compare = nameA.localeCompare(nameB);
+        return compare !== 0 ? compare : a.name.localeCompare(b.name);
+    });
 
   return (
     <div className="page-container">
       <div className="desktop-grid">
-        {/* CỘT TRÁI: GIỮ NGUYÊN */}
+        
+        {/* --- CỘT TRÁI: CHỈ CÒN CÔNG CỤ NHẬP LIỆU --- */}
         <div className="left-panel">
-          <h3 style={{marginTop:0}}>🛠️ Công cụ</h3>
+          <h3 style={{marginTop:0}}>🛠️ Nhập Liệu</h3>
           <div style={{background: '#e0e7ff', padding: '15px', borderRadius: '8px', marginBottom: '20px'}}>
             <div style={{display:'flex', gap:'10px', marginBottom:'15px'}}>
                 <button onClick={() => setIsBulkMode(false)} style={{flex:1, padding:'8px', border:'none', borderRadius:'4px', cursor:'pointer', background: !isBulkMode ? '#4338ca' : '#c7d2fe', color: !isBulkMode ? 'white' : '#333', fontWeight:'bold'}}>Thêm Lẻ</button>
@@ -131,7 +130,7 @@ function StudentManager() {
 
             {!isNewClass && (
                 <div className="form-group">
-                  <label>Chọn Lớp:</label>
+                  <label>Thêm vào Lớp:</label>
                   <select value={classId} onChange={e => setClassId(e.target.value)} style={{fontWeight:'bold', border:'2px solid #6366f1'}}>
                     {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -173,23 +172,70 @@ function StudentManager() {
                 {isBulkMode ? `Lưu Danh Sách` : 'Lưu Học Sinh'}
             </button>
           </div>
-          
-           <hr style={{margin: '20px 0', borderTop:'1px solid #ddd'}}/>
-           <h4>🔍 Bộ lọc</h4>
-           <div className="form-group"><select value={filterClassId} onChange={e => setFilterClassId(e.target.value)}><option value="all">-- Tất cả lớp --</option>{classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
-           
-           {filterClassId !== 'all' && (
-            <div style={{marginBottom: '15px', padding: '10px', background: '#fee2e2', borderRadius: '6px', border: '1px solid #fca5a5'}}>
-                <button onClick={handleDeleteClass} style={{width: '100%', background: '#ef4444', color: 'white', border: 'none', padding: '8px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>🗑️ Xóa hết HS lớp này</button>
-            </div>
-           )}
-
-           <div className="form-group"><input value={filterCommune} onChange={e => setFilterCommune(e.target.value)} placeholder="Lọc xã..." /></div>
         </div>
 
-        {/* CỘT PHẢI: BẢNG DANH SÁCH (CÓ SỬA ĐỔI) */}
+        {/* --- CỘT PHẢI: BỘ LỌC + DANH SÁCH --- */}
         <div className="right-panel">
-          <h3>📋 Danh sách học sinh ({visibleStudents.length})</h3>
+          
+          {/* 1. THANH BỘ LỌC (MỚI) */}
+          <div style={{background: '#f8fafc', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #e2e8f0'}}>
+            <h4 style={{marginTop:0, marginBottom: '10px', color: '#64748b'}}>🔍 Bộ lọc & Tìm kiếm</h4>
+            
+            <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', alignItems: 'flex-end'}}>
+                
+                {/* Lọc Lớp */}
+                <div style={{flex: 1, minWidth: '150px'}}>
+                    <label style={{display:'block', marginBottom:'5px', fontWeight:'500'}}>Lớp:</label>
+                    <select 
+                        value={filterClassId} 
+                        onChange={e => setFilterClassId(e.target.value)}
+                        style={{width: '100%', border: '1px solid #94a3b8'}}
+                    >
+                        <option value="all">-- Tất cả lớp --</option>
+                        {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                </div>
+
+                {/* Tìm Tên (MỚI) */}
+                <div style={{flex: 1, minWidth: '150px'}}>
+                    <label style={{display:'block', marginBottom:'5px', fontWeight:'500'}}>Tên học sinh:</label>
+                    <input 
+                        value={filterName} 
+                        onChange={e => setFilterName(e.target.value)} 
+                        placeholder="Nhập tên để tìm..." 
+                        style={{width: '100%'}}
+                    />
+                </div>
+
+                {/* Lọc Xã */}
+                <div style={{flex: 1, minWidth: '150px'}}>
+                    <label style={{display:'block', marginBottom:'5px', fontWeight:'500'}}>Xã / Địa chỉ:</label>
+                    <input 
+                        value={filterCommune} 
+                        onChange={e => setFilterCommune(e.target.value)} 
+                        placeholder="Lọc theo xã..." 
+                        style={{width: '100%'}}
+                    />
+                </div>
+
+                {/* Nút Xóa Lớp (Chỉ hiện khi chọn lớp) */}
+                {filterClassId !== 'all' && (
+                    <button 
+                        onClick={handleDeleteClass}
+                        style={{background: '#ef4444', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', height: '42px'}}
+                    >
+                        🗑️ Xóa lớp này
+                    </button>
+                )}
+            </div>
+            
+            <div style={{marginTop: '10px', fontSize: '0.9rem', color: '#64748b'}}>
+                Hiển thị: <strong>{visibleStudents.length}</strong> học sinh
+            </div>
+          </div>
+
+          {/* 2. BẢNG DANH SÁCH */}
+          <h3>📋 Danh sách học sinh</h3>
           <table>
             <thead>
               <tr>
@@ -203,38 +249,20 @@ function StudentManager() {
               {visibleStudents.map(st => (
                 <tr key={st.id}>
                   {editingId === st.id ? (
-                    // --- GIAO DIỆN KHI ĐANG SỬA ---
                     <>
                         <td>
-                            <select 
-                                value={editForm.classId} 
-                                onChange={e => setEditForm({...editForm, classId: e.target.value})}
-                                style={{padding: '5px', fontSize: '0.9rem'}}
-                            >
+                            <select value={editForm.classId} onChange={e => setEditForm({...editForm, classId: e.target.value})} style={{padding: '5px', fontSize: '0.9rem'}}>
                                 {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </td>
-                        <td>
-                            <input 
-                                value={editForm.name} 
-                                onChange={e => setEditForm({...editForm, name: e.target.value})} 
-                                style={{padding: '5px'}}
-                            />
-                        </td>
-                        <td>
-                            <input 
-                                value={editForm.commune} 
-                                onChange={e => setEditForm({...editForm, commune: e.target.value})}
-                                style={{padding: '5px'}} 
-                            />
-                        </td>
+                        <td><input value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} style={{padding: '5px'}}/></td>
+                        <td><input value={editForm.commune} onChange={e => setEditForm({...editForm, commune: e.target.value})} style={{padding: '5px'}} /></td>
                         <td style={{textAlign:'right', whiteSpace: 'nowrap'}}>
                             <button onClick={saveEdit} style={{marginRight:'5px', background:'#059669', color:'white', border:'none', padding:'5px 10px', borderRadius:'4px', cursor:'pointer'}}>💾 Lưu</button>
                             <button onClick={cancelEdit} style={{background:'#9ca3af', color:'white', border:'none', padding:'5px 10px', borderRadius:'4px', cursor:'pointer'}}>❌ Hủy</button>
                         </td>
                     </>
                   ) : (
-                    // --- GIAO DIỆN BÌNH THƯỜNG ---
                     <>
                         <td><span style={{background:'#dbeafe', color:'#1e40af', padding:'2px 8px', borderRadius:'10px', fontSize:'0.8rem', fontWeight:'bold'}}>{st.Class?.name}</span></td>
                         <td style={{fontWeight:'500'}}>{st.name}</td>
