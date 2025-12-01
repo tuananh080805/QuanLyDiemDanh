@@ -22,8 +22,8 @@ function StudentManager() {
   const fetchData = async () => {
     try {
       const [resSt, resCl] = await Promise.all([
-        axios.get('http://localhost:5000/students'),
-        axios.get('http://localhost:5000/classes')
+        axios.get('https://quanlydiemdanh.onrender.com//students'),
+        axios.get('https://quanlydiemdanh.onrender.com//classes')
       ]);
       setStudents(resSt.data);
       setClasses(resCl.data);
@@ -46,7 +46,7 @@ function StudentManager() {
     }
 
     try {
-        await axios.post('http://localhost:5000/students', payload);
+        await axios.post('https://quanlydiemdanh.onrender.com//students', payload);
         alert("Thêm thành công!");
         setName('');
         setCommune(''); // Reset ô nhập xã
@@ -61,7 +61,7 @@ function StudentManager() {
 
   const handleDelete = async (id) => {
     if(confirm("Xóa học sinh này?")) {
-      await axios.delete(`http://localhost:5000/students/${id}`);
+      await axios.delete(`https://quanlydiemdanh.onrender.com//students/${id}`);
       fetchData();
     }
   };

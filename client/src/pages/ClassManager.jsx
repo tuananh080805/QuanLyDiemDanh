@@ -9,7 +9,7 @@ function ClassManager() {
   useEffect(() => { loadClasses(); }, []);
 
   const loadClasses = async () => {
-    const res = await axios.get('http://localhost:5000/classes');
+    const res = await axios.get('https://quanlydiemdanh.onrender.com//classes');
     setClasses(res.data);
   };
 
@@ -20,7 +20,7 @@ function ClassManager() {
 
   const saveEdit = async () => {
     try {
-      await axios.put(`http://localhost:5000/classes/${editingId}`, editForm);
+      await axios.put(`https://quanlydiemdanh.onrender.com//classes/${editingId}`, editForm);
       alert("Cập nhật thành công!");
       setEditingId(null);
       loadClasses();
