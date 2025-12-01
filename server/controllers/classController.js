@@ -40,3 +40,21 @@ exports.deleteClass = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.createClass = async (req, res) => {
+    try {
+        const { name, tuitionFee } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ error: "Vui lòng nhập tên lớp!" });
+        }
+
+        const newClass = await Class.create({ 
+            name, 
+            tuitionFee: tuitionFee || 0 
+        });
+        
+        res.json(newClass);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

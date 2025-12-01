@@ -115,3 +115,22 @@ exports.importStudents = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.updateStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, commune, classId } = req.body; 
+
+        await Student.update(
+            { 
+                name: name, 
+                commune: commune,
+                ClassId: classId // Cập nhật ID lớp mới
+            },
+            { where: { id } }
+        );
+
+        res.json({ message: "Cập nhật thành công!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

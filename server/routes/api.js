@@ -29,4 +29,6 @@ router.delete('/students/:id', studentController.deleteStudent); // Xóa 1 em
 router.delete('/students/class/:classId', studentController.deleteByClass);
 router.delete('/classes/:id', classController.deleteClass);
 router.post('/students/import', studentController.importStudents);
+router.put('/students/:id', studentController.updateStudent);
+router.post('/classes', classController.createClass);
 module.exports = router;
